@@ -4,7 +4,7 @@
 
 image:
   repository: public.ecr.aws/aws-controllers-k8s/apigatewayv2-controller
-  tag: v1.0.3
+  tag: 0.1.5
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -28,10 +28,30 @@ deployment:
   # Which priorityClassName to set?
   # See: https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#pod-priority
   priorityClassName: ""
+  extraVolumes: []
+  extraVolumeMounts: []
+
+  # Additional server container environment variables
+  #
+  # You specify this manually like you would a raw deployment manifest.
+  # This means you can bind in environment variables from secrets.
+  #
+  # e.g. static environment variable:
+  #  - name: DEMO_GREETING
+  #    value: "Hello from the environment"
+  #
+  # e.g. secret environment variable:
+  # - name: USERNAME
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: mysecret
+  #       key: username
+  extraEnvVars: []
+
 
 # If "installScope: cluster" then these labels will be applied to ClusterRole
 role:
- labels: {}
+  labels: {}
   
 metrics:
   service:
@@ -71,6 +91,10 @@ log:
 # watch for object creation in the namespace. By default installScope is
 # cluster wide.
 installScope: cluster
+
+# Set the value of the "namespace" to be watched by the controller
+# This value is only used when the `installScope` is set to "namespace". If left empty, the default value is the release namespace for the chart.
+watchNamespace: ""
 
 resourceTags:
   # Configures the ACK service controller to always set key/value pairs tags on
